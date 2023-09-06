@@ -50,13 +50,17 @@ const HomeScreen = () => {
                       : "red",
                 }}
               >
-                {travel.travel_elapsed_time} min
+                {travel.travel_elapsed_time
+                  ? travel.travel_elapsed_time + " min"
+                  : "..."}
               </td>
               <td>{travel.travel_distance} km</td>
               {/* <td>{travel.travel_expected_arrival_time}</td> */}
               <td>{travel.travel_expected_return_time}</td>
               <td>
-                {new Date(travel.travel_arrival ?? "").toLocaleTimeString()}
+                {travel.travel_arrival
+                  ? new Date(travel.travel_arrival ?? "").toLocaleTimeString()
+                  : "..."}
               </td>
 
               <td>

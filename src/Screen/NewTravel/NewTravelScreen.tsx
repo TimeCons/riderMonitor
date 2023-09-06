@@ -104,19 +104,22 @@ export const NewTravelScreen: React.FC = () => {
     }
   };
 
-  const handleEndTravel = useCallback(async () => {
-    if (currentTravel) {
-      console.log("_id", currentTravel._id);
-      const travelData: TravelData = {
-        ...currentTravel,
-        travel_status: "completed",
-        travel_elapsed_time: currentTravel.travel_elapsed_time,
-        travel_arrival: String(new Date()),
-      };
-      await endTravel(travelData);
-      setCurrentTravel(undefined);
-    }
-  }, [currentTravel, endTravel, setCurrentTravel]);
+  const handleEndTravel = useCallback(
+    async (status: "canceled" | "completed") => {
+      if (currentTravel) {
+        console.log("_id", currentTravel._id);
+        const travelData: TravelData = {
+          ...currentTravel,
+          travel_status: status,
+          travel_elapsed_time: currentTravel.travel_elapsed_time,
+          travel_arrival: String(new Date()),
+        };
+        await endTravel(travelData);
+        setCurrentTravel(undefined);
+      }
+    },
+    [currentTravel, endTravel, setCurrentTravel]
+  );
 
   //update elasped travel time
   useEffect(() => {
@@ -167,8 +170,20 @@ export const NewTravelScreen: React.FC = () => {
             {currentTravel?.travel_expected_return_time}
           </p>
           <p>Tempo impiegato: {currentTravel?.travel_elapsed_time} minuti</p>
-          <button onClick={handleCancelTravel}>Annulla viaggio</button>
-          <button onClick={handleEndTravel}>Termina viaggio</button>
+          <button
+            onClick={() => {
+              handleEndTravel("canceled");
+            }}
+          >
+            Annulla viaggio
+          </button>
+          <button
+            onClick={() => {
+              handleEndTravel("completed");
+            }}
+          >
+            Termina viaggio
+          </button>
         </div>
       ) : (
         <form className="form-container" onSubmit={handleAddressInputSubmit}>
