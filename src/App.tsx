@@ -16,7 +16,7 @@ function App() {
     <Router>
       <div>
         {/* Inserimento del componente Nav */}
-        <Nav />
+        {/* <Nav /> */}
         {/* Definizione delle rotte */}
         <Routes>
           <Route path="/" Component={HomeScreen} />
