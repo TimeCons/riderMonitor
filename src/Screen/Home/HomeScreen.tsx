@@ -67,7 +67,13 @@ const HomeScreen = () => {
                 {new Date(travel.travel_departure ?? "").toLocaleDateString()}{" "}
                 {new Date(travel.travel_departure ?? "").toLocaleTimeString()}
               </td>
-              <td>{travel.travel_status}</td>
+              <td>
+                {travel.travel_status === "progress"
+                  ? "in corso"
+                  : travel.travel_status === "completed"
+                  ? "completato"
+                  : "annullato"}
+              </td>
               <td>{travel.travel_rider}</td>
             </tr>
           ))}
