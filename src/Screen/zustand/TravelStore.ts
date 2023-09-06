@@ -36,7 +36,7 @@ export const useTravelStore = create<TravelStore>()(
           try {
             const newTravel = await createTravel(travel);
             console.log(newTravel._id);
-            set({ currentTravel: newTravel });
+            set({ currentTravel: newTravel, rider: newTravel.travel_rider });
           } catch (err) {
             console.error(err);
           }
