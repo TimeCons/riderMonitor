@@ -161,7 +161,7 @@ export const NewTravelScreen: React.FC = () => {
       ) : currentTravel?.travel_departure ? (
         <div className="completed-travel">
           <p style={{ fontWeight: "bold" }}>
-            {usernameInput}, il tuo viaggio è in corso
+            {currentRider}, il tuo viaggio è in corso
           </p>
           <p>Destinazione: {currentTravel?.travel_address}</p>
           <p>Orario di partenza: {departure?.toLocaleTimeString()}</p>
