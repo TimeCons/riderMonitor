@@ -1,0 +1,22 @@
+/* style table, row and cells in order to have a modern readable grid */
+
+table {
+  font-size: 14px !important;
+  border-collapse: collapse;
+  width: 100%;
+  border: 1px solid #ddd;
+  font-size: 18px;
+}
+
+th, td {
+  text-align: left;
+  padding: 16px;
+}
+
+tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+
+
+
