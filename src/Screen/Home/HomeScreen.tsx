@@ -15,8 +15,12 @@ const HomeScreen = () => {
   };
 
   useEffect(() => {
-    console.log("currentTravel", currentTravel);
+    //chiama fetchtravels ogni minuto
     fetchTravels();
+    const interval = setInterval(() => {
+      fetchTravels();
+    }, 60000);
+    return () => clearInterval(interval);
   }, []);
 
   return (
@@ -27,18 +31,29 @@ const HomeScreen = () => {
             <th>Indirizzo</th>
             <th>T. stimato</th>
             <th>T. Impiegato</th>
-            <th>Distanza</th>
+            {/* <th>Distanza</th> */}
             {/* <th>arrivo stimato</th> */}
             <th>rientro stimato</th>
-            <th>rientro</th>
-            <th>partenza</th>
+            {/* <th>rientro</th>
+            <th>partenza</th> */}
             <th>Stato</th>
             <th>Rider</th>
           </tr>
         </thead>
         <tbody>
           {travels.map((travel) => (
-            <tr key={travel._id}>
+            <tr
+              key={travel._id}
+              // se il giorno è diverso da oggi, allora il colore è rosso non troppo acceso
+              style={{
+                backgroundColor:
+                  new Date(
+                    travel.travel_departure ?? ""
+                  ).toLocaleDateString() !== new Date().toLocaleDateString()
+                    ? "#ffcccc"
+                    : "",
+              }}
+            >
               <td>{travel.travel_address}</td>
               <td>{travel.travel_estimed_time_minutes} min</td>
               <td
@@ -50,14 +65,14 @@ const HomeScreen = () => {
                       : "red",
                 }}
               >
-                {travel.travel_elapsed_time
+                {travel.travel_elapsed_time !== undefined
                   ? travel.travel_elapsed_time + " min"
                   : "..."}
               </td>
-              <td>{travel.travel_distance} km</td>
+              {/* <td>{travel.travel_distance} km</td> */}
               {/* <td>{travel.travel_expected_arrival_time}</td> */}
               <td>{travel.travel_expected_return_time}</td>
-              <td>
+              {/* <td>
                 {travel.travel_arrival
                   ? new Date(travel.travel_arrival ?? "").toLocaleTimeString()
                   : "..."}
@@ -66,7 +81,7 @@ const HomeScreen = () => {
               <td>
                 {new Date(travel.travel_departure ?? "").toLocaleDateString()}{" "}
                 {new Date(travel.travel_departure ?? "").toLocaleTimeString()}
-              </td>
+              </td> */}
               <td>
                 {travel.travel_status === "progress"
                   ? "in corso"
