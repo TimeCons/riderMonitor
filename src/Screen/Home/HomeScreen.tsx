@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { getAllTravels } from "../../api/travel";
+import React, { useEffect, useMemo, useState } from "react";
+import { endTravel, getAllTravels, updateTravel } from "../../api/travel";
 import { TravelData } from "../../types/travel";
 import { useTravelStore } from "../zustand/TravelStore";
 import "./HomeScreen.css";
@@ -22,6 +22,10 @@ const HomeScreen = () => {
     }, 60000);
     return () => clearInterval(interval);
   }, []);
+
+  const atLeastOneProgress = useMemo(() => {
+    return travels.some((travel) => travel.travel_status === "progress");
+  }, [travels]);
 
   return (
     <div>
@@ -65,9 +69,19 @@ const HomeScreen = () => {
                       : "red",
                 }}
               >
-                {travel.travel_elapsed_time !== undefined
-                  ? travel.travel_elapsed_time + " min"
-                  : "..."}
+                {travel.travel_elapsed_time !== undefined ? (
+                  travel.travel_elapsed_time + " min"
+                ) : (
+                  <button
+                    onClick={() => {
+                      endTravel(travel).then(() => {
+                        fetchTravels();
+                      });
+                    }}
+                  >
+                    Termina
+                  </button>
+                )}
               </td>
               {/* <td>{travel.travel_distance} km</td> */}
               {/* <td>{travel.travel_expected_arrival_time}</td> */}

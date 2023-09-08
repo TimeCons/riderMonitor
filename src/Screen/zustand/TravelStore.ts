@@ -2,7 +2,7 @@ import { create } from "zustand";
 import { createJSONStorage, devtools, persist } from "zustand/middleware";
 import { produce } from "immer";
 import { TravelData } from "../../types/travel";
-import { createTravel, updateTravel } from "../../api/travel";
+import { createTravel, endTravel, updateTravel } from "../../api/travel";
 
 interface TravelState {
   travels: TravelData[];
@@ -43,7 +43,7 @@ export const useTravelStore = create<TravelStore>()(
         },
         endTravel: async (travel: TravelData) => {
           try {
-            const closedTravel = await updateTravel(travel);
+            const closedTravel = await endTravel(travel);
             set({ currentTravel: undefined });
           } catch (err) {
             console.error(err);

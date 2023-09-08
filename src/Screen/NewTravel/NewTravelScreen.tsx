@@ -4,6 +4,7 @@ import { getDistanceMatrix } from "../../api/maps";
 import { DistanceMatrixService, useJsApiLoader } from "@react-google-maps/api";
 import { TravelData } from "../../types/travel";
 import { useTravelStore } from "../zustand/TravelStore";
+import { getOneTravel } from "../../api/travel";
 
 export const NewTravelScreen: React.FC = () => {
   const { isLoaded } = useJsApiLoader({
@@ -64,7 +65,7 @@ export const NewTravelScreen: React.FC = () => {
     setIsConfirmationShown(false);
   };
 
-  const handleCancelTravel = () => {
+  const closeTravel = () => {
     setCurrentTravel(undefined);
   };
 
@@ -104,22 +105,14 @@ export const NewTravelScreen: React.FC = () => {
     }
   };
 
-  const handleEndTravel = useCallback(
-    async (status: "canceled" | "completed") => {
-      if (currentTravel) {
-        console.log("_id", currentTravel._id);
-        const travelData: TravelData = {
-          ...currentTravel,
-          travel_status: status,
-          travel_elapsed_time: currentTravel.travel_elapsed_time,
-          travel_arrival: String(new Date()),
-        };
-        await endTravel(travelData);
-        setCurrentTravel(undefined);
+  const checkIfClosedByAdmin = async () => {
+    if (currentRider) {
+      const travel = await getOneTravel(currentTravel?._id ?? "");
+      if (travel?.travel_status === "completed") {
+        closeTravel();
       }
-    },
-    [currentTravel, endTravel, setCurrentTravel]
-  );
+    }
+  };
 
   //update elasped travel time
   useEffect(() => {
@@ -128,11 +121,13 @@ export const NewTravelScreen: React.FC = () => {
         const elapsedTravelTime = Math.round(
           (Date.now() - departure.getTime()) / 1000 / 60
         );
+
         const travelData: TravelData = {
           ...currentTravel,
           travel_elapsed_time: elapsedTravelTime.toString(),
         };
         setCurrentTravel({ ...currentTravel, ...travelData });
+        void checkIfClosedByAdmin();
       }, 1000);
       return () => clearInterval(interval);
     }
@@ -172,17 +167,10 @@ export const NewTravelScreen: React.FC = () => {
           <p>Tempo impiegato: {currentTravel?.travel_elapsed_time} minuti</p>
           <button
             onClick={() => {
-              handleEndTravel("canceled");
+              closeTravel();
             }}
           >
-            Annulla viaggio
-          </button>
-          <button
-            onClick={() => {
-              handleEndTravel("completed");
-            }}
-          >
-            Termina viaggio
+            CHIUDI
           </button>
         </div>
       ) : (
